@@ -90,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       MaterialPageRoute(builder: (_) => RootTab(),),);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor,
+                    primary: primaryColor,
                   ),
                   child: Text('로그인'),
                 ),
@@ -98,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: () async {
                   },
                   style: TextButton.styleFrom(
-                    foregroundColor: Colors.black,
+                    primary: Colors.black,
                   ),
                   child: Text('회원가입'),
                 ),
