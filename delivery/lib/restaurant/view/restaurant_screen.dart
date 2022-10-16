@@ -22,36 +22,38 @@ class RestaurantScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         child: Center(
-          child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: FutureBuilder<List>(
-                future: paginateRestaurant(),
-                builder: (context, AsyncSnapshot<List> snapshot) {
-                  if (!snapshot.hasData) {
-                    return Container();
-                  }
-                  return ListView.separated(
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (_, index) {
-                      final item = snapshot.data![index];
-                      final pItem = RestaurantModel.fromJson(json: item);
-                      return GestureDetector(
-                          onTap: () {
-                            Navigator
-                                .of(context)
-                                .push(MaterialPageRoute(builder: (_) =>
-                                RestaurantDetailScreen()));
-                            },
-                          child: RestaurantCard.fromModel(model: pItem,));
-                    },
-                    separatorBuilder: (_, index) {
-                      return const SizedBox(
-                        height: 16,
-                      );
-                    },
+      child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: FutureBuilder<List>(
+            future: paginateRestaurant(),
+            builder: (context, AsyncSnapshot<List> snapshot) {
+              if (!snapshot.hasData) {
+                return Container();
+              }
+              return ListView.separated(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (_, index) {
+                  final item = snapshot.data![index];
+                  final pItem = RestaurantModel.fromJson(json: item);
+                  return GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => RestaurantDetailScreen(
+                                  id: pItem.id,
+                                )));
+                      },
+                      child: RestaurantCard.fromModel(
+                        model: pItem,
+                      ));
+                },
+                separatorBuilder: (_, index) {
+                  return const SizedBox(
+                    height: 16,
                   );
                 },
-              )),
-        ));
+              );
+            },
+          )),
+    ));
   }
 }
