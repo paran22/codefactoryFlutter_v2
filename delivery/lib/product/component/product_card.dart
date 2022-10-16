@@ -1,25 +1,43 @@
 import 'package:delivery/common/const/colors.dart';
+import 'package:delivery/restaurant/model/restaurant_detail_model.dart';
 import 'package:flutter/material.dart';
 
-import '../../common/const/data.dart';
-
 class ProductCard extends StatelessWidget {
-  const ProductCard({Key? key}) : super(key: key);
+  const ProductCard(
+      {Key? key,
+      required this.image,
+      required this.name,
+      required this.detail,
+      required this.price})
+      : super(key: key);
+
+  final Image image;
+  final String name;
+  final String detail;
+  final int price;
+
+  factory ProductCard.fromModel({required RestaurantProductModel model}) {
+    return ProductCard(
+      image: Image.network(
+        model.imgUrl,
+        width: 110,
+        height: 110,
+        fit: BoxFit.cover,
+      ),
+      name: model.name,
+      detail: model.detail,
+      price: model.price,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final thumbUrl = '/img/스테이크/등심스테이크.jpg';
     return IntrinsicHeight(
       child: Row(
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: Image.network(
-              'http://$ip${thumbUrl}',
-              width: 110,
-              height: 110,
-              fit: BoxFit.cover,
-            ),
+            child: image,
           ),
           const SizedBox(
             width: 16.0,
@@ -29,11 +47,11 @@ class ProductCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                '떡볶이',
+                name,
                 style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500),
               ),
               Text(
-                '스테끼에는 역시 감자칩이 진리! 겉은 바삭바삭하게 구워지고 속은 촉촉하게 미디엄레어로 구워진 스테이크와함께 소금과 후추가 듬뿍 뿌려진 짭짤한 감자칩을 같이 먹어볼 수 있는 세트메뉴!',
+                detail,
                 style: TextStyle(
                   fontSize: 14.0,
                   color: bodyTextColor,
@@ -42,7 +60,7 @@ class ProductCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               Text(
-                '￦10000',
+                '￦{price}',
                 style: TextStyle(
                     color: primaryColor,
                     fontSize: 12.0,
