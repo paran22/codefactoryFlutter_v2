@@ -1,22 +1,23 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:delivery/common/component/custom_text_form_field.dart';
 import 'package:delivery/common/const/colors.dart';
 import 'package:delivery/common/const/data.dart';
 import 'package:delivery/common/layout/default_layout.dart';
+import 'package:delivery/common/secure_storage/secure_storage.dart';
 import 'package:delivery/common/view/root_tab.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   String username = '';
   String password = '';
 
@@ -42,10 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 _SubTitle(),
                 Image.asset(
                   'asset/img/misc/logo.png',
-                  width: MediaQuery
-                      .of(context)
-                      .size
-                      .width / 3 * 2,
+                  width: MediaQuery.of(context).size.width / 3 * 2,
                 ),
                 CustomTextFormField(
                   hintText: '이메일을 입력해주세요',
@@ -75,19 +73,23 @@ class _LoginScreenState extends State<LoginScreen> {
                     final response = await dio.post(
                       'http://$ip/auth/login',
                       options:
-                      Options(headers: {'authorization': 'Basic $token'}),
+                          Options(headers: {'authorization': 'Basic $token'}),
                     );
 
                     final refreshToken = response.data['refreshToken'];
                     final accessToken = response.data['accessToken'];
 
-                    await storage.write(key: refreshTokenKey, value: refreshToken);
-                    await storage.write(key: accessTokenKey, value: accessToken);
+                    final storage = ref.read(secureStorageProvider);
+                    await storage.write(
+                        key: refreshTokenKey, value: refreshToken);
+                    await storage.write(
+                        key: accessTokenKey, value: accessToken);
 
-                    Navigator
-                        .of(context)
-                        .push(
-                      MaterialPageRoute(builder: (_) => RootTab(),),);
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => RootTab(),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     primary: primaryColor,
@@ -95,8 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Text('로그인'),
                 ),
                 TextButton(
-                  onPressed: () async {
-                  },
+                  onPressed: () async {},
                   style: TextButton.styleFrom(
                     primary: Colors.black,
                   ),

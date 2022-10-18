@@ -60,7 +60,7 @@ class ProductCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               Text(
-                '￦{price}',
+                '￦$price',
                 style: TextStyle(
                     color: primaryColor,
                     fontSize: 12.0,
