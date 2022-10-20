@@ -17,16 +17,13 @@ class RestaurantDetailScreen extends ConsumerWidget {
 
   final String id;
 
-  Future<RestaurantDetailModel> getRestaurantDetail(WidgetRef ref) async {
-    return ref.watch(restaurantRepositoryProvider).getRestaurantDetail(id: id);
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return DefaultLayout(
       title: '불타는 떡볶이',
       child: FutureBuilder<RestaurantDetailModel>(
-        future: getRestaurantDetail(ref),
+        future:
+            ref.watch(restaurantRepositoryProvider).getRestaurantDetail(id: id),
         builder: (BuildContext context,
             AsyncSnapshot<RestaurantDetailModel> snapshot) {
           if (!snapshot.hasData) {
