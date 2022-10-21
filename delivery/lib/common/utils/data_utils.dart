@@ -1,7 +1,11 @@
 import 'package:delivery/common/const/data.dart';
 
 class DataUtils {
-  static pathToUrl(String value) {
+  static String pathToUrl(String value) {
     return 'http://$ip$value';
+  }
+
+  static List<String> listPathsToUrls(List<String> paths) {
+    return paths.map((value) => 'http://$ip$value').toList();
   }
 }
