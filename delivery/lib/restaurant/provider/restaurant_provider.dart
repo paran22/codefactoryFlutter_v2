@@ -1,7 +1,20 @@
 import 'package:delivery/common/model/cursor_pagination_model.dart';
 import 'package:delivery/common/model/pagination_params.dart';
+import 'package:delivery/restaurant/model/restaurant_model.dart';
 import 'package:delivery/restaurant/repository/restaurant_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+//캐싱
+final restaurantDetailProvider =
+    Provider.family<RestaurantModel?, String>((ref, id) {
+  final state = ref.watch(restaurantProvider);
+
+  if (state is! CursorPagination) {
+    return null;
+  }
+
+  return state.data.firstWhere((element) => element.id == id);
+});
 
 final restaurantProvider =
     StateNotifierProvider<RestaurantStateNotifier, CursorPaginationBase>((ref) {
@@ -18,7 +31,7 @@ class RestaurantStateNotifier extends StateNotifier<CursorPaginationBase> {
 
   final RestaurantRepository repository;
 
-  void paginate({
+  Future<void> paginate({
     int fetchCount = 20,
     bool fetchMore = false,
     bool forceRefetch = false,
@@ -47,19 +60,16 @@ class RestaurantStateNotifier extends StateNotifier<CursorPaginationBase> {
 
       if (fetchMore) {
         final pState = state as CursorPagination;
-
         state = CursorPaginationFetchingMore(
           meta: pState.meta,
           data: pState.data,
         );
-
         paginationParams = paginationParams.copyWith(
           after: pState.data.last.id,
         );
       } else {
         if (state is CursorPagination && !forceRefetch) {
           final pState = state as CursorPagination;
-
           state = CursorPaginationRefetching(
             meta: pState.meta,
             data: pState.data,
@@ -88,5 +98,26 @@ class RestaurantStateNotifier extends StateNotifier<CursorPaginationBase> {
     } catch (e) {
       state = CursorPaginationError(message: '데이터를 가져오지 못했습니다.');
     }
+  }
+
+  void getDetail({
+    required String id,
+  }) async {
+    if (state is! CursorPagination) {
+      await paginate();
+    }
+
+    if (state is! CursorPagination) {
+      return;
+    }
+
+    final pState = state as CursorPagination;
+    final resp = await repository.getRestaurantDetail(id: id);
+
+    state = pState.copyWith(
+      data: pState.data
+          .map<RestaurantModel>((e) => e.id == id ? resp : e)
+          .toList(),
+    );
   }
 }
