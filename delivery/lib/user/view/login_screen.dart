@@ -1,16 +1,17 @@
-import 'dart:convert';
-
 import 'package:delivery/common/component/custom_text_form_field.dart';
 import 'package:delivery/common/const/colors.dart';
 import 'package:delivery/common/const/data.dart';
 import 'package:delivery/common/layout/default_layout.dart';
 import 'package:delivery/common/secure_storage/secure_storage.dart';
+import 'package:delivery/common/utils/data_utils.dart';
 import 'package:delivery/common/view/root_tab.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
+  static String get routeName => 'login';
+
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
@@ -67,8 +68,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ElevatedButton(
                   onPressed: () async {
                     final rawString = '$username:$password';
-                    Codec<String, String> stringToBase64 = utf8.fuse(base64);
-                    String token = stringToBase64.encode(rawString);
+                    final token = DataUtils.pathToUrl(rawString);
 
                     final response = await dio.post(
                       'http://$ip/auth/login',
