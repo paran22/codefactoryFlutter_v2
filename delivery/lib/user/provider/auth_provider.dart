@@ -25,27 +25,33 @@ class AuthProvider extends ChangeNotifier {
     });
   }
 
-  List<GoRoute> get routes =>
-      [
+  List<GoRoute> get routes => [
         GoRoute(
-            path: '/',
-            name: RootTab.routeName,
-            builder: (_, __) => RootTab(),
-            routes: [
-              GoRoute(path: 'restaurant/:rid',
-                  builder: (_, state) =>
-                      RestaurantDetailScreen(id: state.params['rid']!)
-              ),
-            ]),
+          path: '/',
+          name: RootTab.routeName,
+          builder: (_, __) => RootTab(),
+          routes: [
+            GoRoute(
+                path: 'restaurant/:rid',
+                name: RestaurantDetailScreen.routerName,
+                builder: (_, state) =>
+                    RestaurantDetailScreen(id: state.params['rid']!)),
+          ],
+        ),
         GoRoute(
           path: '/splash',
           name: SplashScreen.routeName,
-          builder: (_, __) => SplashScreen(),),
+          builder: (_, __) => SplashScreen(),
+        ),
         GoRoute(
             path: '/login',
             name: LoginScreen.routeName,
-            builder: (_, __) => LoginScreen(,))
+            builder: (_, __) => LoginScreen())
       ];
+
+  logout() {
+    ref.read(userMeProvider.notifier).logout();
+  }
 
   String? redirectLogic(GoRouterState state) {
     final UserModelBase? user = ref.read(userMeProvider);

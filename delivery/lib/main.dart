@@ -1,7 +1,4 @@
 import 'package:delivery/common/provider/go_router.dart';
-import 'package:delivery/common/view/splash_screen.dart';
-import 'package:delivery/user/provider/auth_provider.dart';
-import 'package:delivery/user/repository/auth_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

@@ -84,6 +84,8 @@ class CustomInterceptor extends Interceptor {
         final response = await dio.fetch(options);
         return handler.resolve(response);
       } on DioError catch (e) {
+        // refreshToken이 만료됬을 때 에러 발생
+        // userMeProvider를 사용하면 순환참조 발생 (userMeProvider에서 dio를 사용하는
         return handler.reject(e);
       }
     }

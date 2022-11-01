@@ -5,6 +5,8 @@ import 'package:delivery/common/layout/default_layout.dart';
 import 'package:delivery/common/secure_storage/secure_storage.dart';
 import 'package:delivery/common/utils/data_utils.dart';
 import 'package:delivery/common/view/root_tab.dart';
+import 'package:delivery/user/model/user_model.dart';
+import 'package:delivery/user/provider/user_me_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,7 +26,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final dio = Dio();
+    final state = ref.watch(userMeProvider);
 
     return DefaultLayout(
       child: SingleChildScrollView(
@@ -66,31 +68,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   height: 16.0,
                 ),
                 ElevatedButton(
-                  onPressed: () async {
-                    final rawString = '$username:$password';
-                    final token = DataUtils.pathToUrl(rawString);
-
-                    final response = await dio.post(
-                      'http://$ip/auth/login',
-                      options:
-                          Options(headers: {'authorization': 'Basic $token'}),
-                    );
-
-                    final refreshToken = response.data['refreshToken'];
-                    final accessToken = response.data['accessToken'];
-
-                    final storage = ref.read(secureStorageProvider);
-                    await storage.write(
-                        key: refreshTokenKey, value: refreshToken);
-                    await storage.write(
-                        key: accessTokenKey, value: accessToken);
-
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => RootTab(),
-                      ),
-                    );
-                  },
+                  onPressed: state is UserModelLoading
+                      ? null
+                      : () {
+                          ref.read(userMeProvider.notifier).login(
+                                username: username,
+                                password: password,
+                              );
+                        },
                   style: ElevatedButton.styleFrom(
                     primary: primaryColor,
                   ),

@@ -10,7 +10,7 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
   final baseUrl = 'http://$ip/auth';
   final dio = ref.watch(dioProvider);
   return AuthRepository(baseUrl: baseUrl, dio: dio);
-})
+});
 
 class AuthRepository {
   final String baseUrl;
