@@ -1,5 +1,6 @@
 import 'package:delivery/common/const/data.dart';
 import 'package:delivery/common/secure_storage/secure_storage.dart';
+import 'package:delivery/user/provider/auth_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -7,19 +8,20 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 final dioProvider = Provider<Dio>((ref) {
   final dio = Dio();
   final storage = ref.watch(secureStorageProvider);
-  dio.interceptors.add(CustomInterceptor(storage: storage));
+  dio.interceptors.add(CustomInterceptor(storage: storage, ref: ref,));
 
   return dio;
 });
 
 class CustomInterceptor extends Interceptor {
   final FlutterSecureStorage storage;
+  final Ref ref;
 
-  CustomInterceptor({required this.storage});
+  CustomInterceptor({required this.storage, required this.ref});
 
   @override
-  void onRequest(
-      RequestOptions options, RequestInterceptorHandler handler) async {
+  void onRequest(RequestOptions options,
+      RequestInterceptorHandler handler) async {
     print('[REQ] [${options.method}] ${options.uri}');
 
     if (options.headers['accessToken'] == 'ture') {
@@ -44,7 +46,8 @@ class CustomInterceptor extends Interceptor {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     print(
-        '[RES] [${response.requestOptions.method}] ${response.requestOptions.uri}');
+        '[RES] [${response.requestOptions.method}] ${response.requestOptions
+            .uri}');
 
     return super.onResponse(response, handler);
   }
@@ -85,7 +88,8 @@ class CustomInterceptor extends Interceptor {
         return handler.resolve(response);
       } on DioError catch (e) {
         // refreshToken이 만료됬을 때 에러 발생
-        // userMeProvider를 사용하면 순환참조 발생 (userMeProvider에서 dio를 사용하는
+        // userMeProvider를 사용하면 순환참조 발생 (userMeProvider에서 dio를 사용)
+        ref.read(authProvider.notifier).logout();
         return handler.reject(e);
       }
     }

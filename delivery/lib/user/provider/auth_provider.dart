@@ -1,5 +1,6 @@
 import 'package:delivery/common/view/root_tab.dart';
 import 'package:delivery/common/view/splash_screen.dart';
+import 'package:delivery/restaurant/view/basket_screen.dart';
 import 'package:delivery/restaurant/view/restaurant_detail_screen.dart';
 import 'package:delivery/user/model/user_model.dart';
 import 'package:delivery/user/provider/user_me_provider.dart';
@@ -41,15 +42,19 @@ class AuthProvider extends ChangeNotifier {
         GoRoute(
           path: '/splash',
           name: SplashScreen.routeName,
-          builder: (_, __) => SplashScreen(),
+          builder: (_, __) => const SplashScreen(),
         ),
         GoRoute(
             path: '/login',
             name: LoginScreen.routeName,
-            builder: (_, __) => LoginScreen())
+            builder: (_, __) => const LoginScreen()),
+        GoRoute(
+            path: '/basket',
+            name: BasketScreen.routeName,
+            builder: (_, __) => const BasketScreen())
       ];
 
-  logout() {
+  void logout() {
     ref.read(userMeProvider.notifier).logout();
   }
 
