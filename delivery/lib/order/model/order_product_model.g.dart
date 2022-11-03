@@ -57,5 +57,5 @@ Map<String, dynamic> _$OrderModelToJson(OrderModel instance) =>
       'products': instance.products,
       'totalPrice': instance.totalPrice,
       'restaurant': instance.restaurant,
-      'createdAt': instance.createdAt.toIso8601String(),
+      'createdAt': instance.createdAt?.toIso8601String(),
     };

@@ -1,5 +1,6 @@
 import 'package:delivery/common/view/root_tab.dart';
 import 'package:delivery/common/view/splash_screen.dart';
+import 'package:delivery/order/view/order_done_screen.dart';
 import 'package:delivery/restaurant/view/basket_screen.dart';
 import 'package:delivery/restaurant/view/restaurant_detail_screen.dart';
 import 'package:delivery/user/model/user_model.dart';
@@ -36,7 +37,7 @@ class AuthProvider extends ChangeNotifier {
                 path: 'restaurant/:rid',
                 name: RestaurantDetailScreen.routerName,
                 builder: (_, state) =>
-                    RestaurantDetailScreen(id: state.params['rid']!)),
+                    RestaurantDetailScreen(id: state.params['rid']!)) ,
           ],
         ),
         GoRoute(
@@ -45,13 +46,20 @@ class AuthProvider extends ChangeNotifier {
           builder: (_, __) => const SplashScreen(),
         ),
         GoRoute(
-            path: '/login',
-            name: LoginScreen.routeName,
-            builder: (_, __) => const LoginScreen()),
+          path: '/login',
+          name: LoginScreen.routeName,
+          builder: (_, __) => const LoginScreen(),
+        ),
         GoRoute(
-            path: '/basket',
-            name: BasketScreen.routeName,
-            builder: (_, __) => const BasketScreen())
+          path: '/basket',
+          name: BasketScreen.routeName,
+          builder: (_, __) => const BasketScreen(),
+        ),
+        GoRoute(
+          path: '/order_done',
+          name: OrderDoneScreen.routeName,
+          builder: (_, __) => const OrderDoneScreen(),
+        ),
       ];
 
   void logout() {
@@ -61,7 +69,6 @@ class AuthProvider extends ChangeNotifier {
   String? redirectLogic(GoRouterState state) {
     final UserModelBase? user = ref.read(userMeProvider);
     final loggingIn = state.location == '/login';
-
     if (user == null) {
       return loggingIn ? null : '/login';
     }

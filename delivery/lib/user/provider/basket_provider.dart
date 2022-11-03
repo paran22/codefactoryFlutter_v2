@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:debounce_throttle/debounce_throttle.dart';
 import 'package:delivery/product/model/product_model.dart';
 import 'package:delivery/user/model/basket_item_model.dart';
 import 'package:delivery/user/model/patch_basket_body.dart';
@@ -13,10 +14,21 @@ final basketProvider =
 
 class BasketProvider extends StateNotifier<List<BasketItemModel>> {
   final UserMeRepository repository;
+  final updateBasketDebounce = Debouncer(
+    const Duration(seconds: 1),
+    initialValue: null,
+    checkEquality: false,
+  );
 
   BasketProvider({
     required this.repository,
-  }) : super([]);
+  }) : super([]) {
+    updateBasketDebounce.values.listen(
+      (state) {
+        patchBasket();
+      },
+    );
+  }
 
   Future<void> patchBasket() async {
     await repository.patchBasket(
@@ -45,8 +57,7 @@ class BasketProvider extends StateNotifier<List<BasketItemModel>> {
 
     // Optimistic Response (긍정적 응답)
     // 응답이 성공할거라고 가정하고 상태를 먼저 업데이트 함
-    // 응답이 성공할거라고 가정하고 상태를 먼저 업데이트 함
-    await patchBasket();
+    updateBasketDebounce.setValue(null);
   }
 
   Future<void> removeFromBasket({
@@ -71,6 +82,6 @@ class BasketProvider extends StateNotifier<List<BasketItemModel>> {
       return;
     }
 
-    await patchBasket();
+    updateBasketDebounce.setValue(null);
   }
 }

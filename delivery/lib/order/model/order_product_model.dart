@@ -50,14 +50,14 @@ class OrderModel implements IModelWithId {
   final int totalPrice;
   final RestaurantModel restaurant;
   @JsonKey(fromJson: DataUtils.stringToDateTime)
-  final DateTime createdAt;
+  final DateTime? createdAt;
 
   const OrderModel({
     required this.id,
     required this.products,
     required this.totalPrice,
     required this.restaurant,
-    required this.createdAt,
+    this.createdAt,
   });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) =>

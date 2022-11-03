@@ -1,5 +1,6 @@
 import 'package:delivery/common/const/colors.dart';
 import 'package:delivery/common/layout/default_layout.dart';
+import 'package:delivery/order/view/order_screen.dart';
 import 'package:delivery/product/view/product_screen.dart';
 import 'package:delivery/restaurant/view/restaurant_screen.dart';
 import 'package:delivery/user/view/profile_screen.dart';
@@ -41,20 +42,6 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return DefaultLayout(
       title: '코팩 딜리버리',
-      child: Scaffold(
-        body: TabBarView(
-          controller: controller,
-          physics: NeverScrollableScrollPhysics(),
-          children: [
-            RestaurantScreen(),
-            ProductScreen(),
-            Container(
-              child: Text('주문'),
-            ),
-            ProfileScreen(),
-          ],
-        ),
-      ),
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: primaryColor,
         unselectedItemColor: bodyTextColor,
@@ -65,7 +52,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
           controller.animateTo(index);
         },
         currentIndex: index,
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(
               Icons.home_outlined,
@@ -91,6 +78,18 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
             label: '프로필',
           ),
         ],
+      ),
+      child: Scaffold(
+        body: TabBarView(
+          controller: controller,
+          physics: const NeverScrollableScrollPhysics(),
+          children: const [
+            RestaurantScreen(),
+            ProductScreen(),
+            OrderScreen(),
+            ProfileScreen(),
+          ],
+        ),
       ),
     );
   }
